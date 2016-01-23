@@ -1,5 +1,7 @@
 from __future__ import print_function
 import time
+import os
+import pickle
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.cross_validation import train_test_split
@@ -66,20 +68,42 @@ labels_test = LabelBinarizer().fit_transform(y_test)
 X_train_l = X_train.tolist()
 labels_train_l = labels_train.tolist()
 
-# create the artificial neuron network with:
-# 1 input layer of size 64 (the images are 8x8 gray pixels)
-# 1 hidden layer of size 100
-# 1 output layer of size 10 (the labels of digits are 0 to 9)
-nn = ANN([64, 100, 10])
 
-# see how long training takes
-startTime = time.time()
+def save_NN(nn, name):
+	with open(name, 'wb') as f:
+		pickle.dump(nn, f)
 
-# train it
-nn.train(10, X_train_l, labels_train_l)
 
-elapsedTime = time.time() - startTime
-print("Training took {0} seconds".format(elapsedTime))
+def load_NN(name):
+	with open(name, 'rb') as f:
+		nn = pickle.load(f)
+		return nn
+
+# load or create an ANN
+nn = None
+serialized_name = 'nn_mnist_8by8_10epochs.pickle'
+
+if os.path.exists(serialized_name):
+	# load a saved ANN
+	nn = load_NN(serialized_name)
+else:
+	# create the ANN with:
+	# 1 input layer of size 64 (the images are 8x8 gray pixels)
+	# 1 hidden layer of size 100
+	# 1 output layer of size 10 (the labels of digits are 0 to 9)
+	nn = ANN([64, 100, 10])
+
+	# see how long training takes
+	startTime = time.time()
+
+	# train it
+	nn.train(10, X_train_l, labels_train_l)
+
+	elapsedTime = time.time() - startTime
+	print("Training took {0} seconds".format(elapsedTime))
+
+	# serialize and save the ANN
+	save_NN(nn, serialized_name)
 
 # compute the predictions
 predictions = []
