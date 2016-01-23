@@ -17,11 +17,12 @@ class ANN:
 			self.layers.append(layer)
 
 	def train(self, n_epochs, inputs, targets):
+		print("Training...")
 		n_examples = 0
 		for epoch in range(0, n_epochs):
 			# if epoch % 10 == 0:
 			#    print("Epoch:", epoch)
-
+			print("Epoch:", epoch)
 			for i in range(0, len(inputs)):
 				n_examples += 1
 
