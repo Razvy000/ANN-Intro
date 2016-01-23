@@ -1,7 +1,7 @@
 from __future__ import print_function
 import math
 import random
-
+import pickle
 
 class ANN:
 
@@ -121,6 +121,16 @@ class ANN:
 			for j in range(0, len(self.layers[l].weight)):
 				print(self.layers[l].weight[j])
 			print()
+
+	def serialize(self, nn, name):
+		with open(name, 'wb') as f:
+			pickle.dump(nn, f)
+
+
+	def deserialize(self, name):
+		with open(name, 'rb') as f:
+			nn = pickle.load(f)
+			return nn
 
 
 class Layer:
