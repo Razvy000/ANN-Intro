@@ -5,7 +5,7 @@ from ann import ANN
 class TestANN(unittest.TestCase):
 
 	def test_xor_trainig(self):
-		print("test_xor_trainig")
+		print("test_xor_trainig...")
 		nn = ANN([2, 2, 1])
 		inputs = [[0.0, 0.0], [0.0, 1.0], [1.0, 0.0], [1.0, 1.0]]
 		targets = [[0.0], [1.0], [1.0], [0.0]]
