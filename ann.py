@@ -181,13 +181,20 @@ if __name__ == '__main__':
 	inputs = [[0.0, 0.0], [0.0, 1.0], [1.0, 0.0], [1.0, 1.0]]
 	targets = [[0.0], [1.0], [1.0], [0.0]]
 
+	# predict before training
+	print("Predict before training")
+	for i in range(len(targets)):
+		print(nn.predict(inputs[i]))
+	print()
+
 	# train
 	nn.train(20000, inputs, targets)
 
 	# weights
 	# nn.printW()
 
-	# predict
+	# predict after training
+	print("Predict after training")
 	for i in range(len(targets)):
 		print(nn.predict(inputs[i]))
 	
