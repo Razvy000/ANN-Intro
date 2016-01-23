@@ -1,13 +1,39 @@
 from __future__ import print_function
 import time
 import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.cross_validation import train_test_split
 from sklearn.datasets import load_digits
 from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.preprocessing import LabelBinarizer
 from ann import ANN
 
-# import the simplified mnist dataset form scikit learn
+
+# http://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_digits.html#sklearn.datasets.load_digits
+
+def show_training(digits):
+	images_and_labels = list(zip(digits.images, digits.target))
+	for index, (image, label) in enumerate(images_and_labels[:4]):
+		plt.subplot(2, 4, index + 1)
+		plt.axis('off')
+		plt.imshow(image, cmap=plt.cm.gray_r, interpolation='nearest')
+		plt.title('Training: %i' % label)
+
+
+def show_predictions(digits, images, imgshape, predicted):
+	n_samples = len(digits.images)
+	images_and_predictions = list(zip(images, predicted))
+	for index, (image, prediction) in enumerate(images_and_predictions[:4]):
+		plt.subplot(2, 4, index + 5)
+		plt.axis('off')
+		# transform vector to image for imshow
+		img = np.array(image, np.float)
+		img = img.reshape(imgshape)
+		plt.imshow(img, cmap=plt.cm.gray_r, interpolation='nearest')
+		plt.title('Prediction: %i' % prediction)
+
+
+# import the simplified mnist dataset from scikit learn
 digits = load_digits()
 
 # get the input vectors (X is a vector of vectors of type int)
@@ -18,6 +44,10 @@ y = digits.target
 
 print("X.shape", X.shape)
 print("y.shape", y.shape)
+
+# visualize some training examples
+show_training(digits)
+plt.show()
 
 # normalize input into [0, 1]
 X -= X.min()
@@ -36,7 +66,7 @@ labels_test = LabelBinarizer().fit_transform(y_test)
 X_train_l = X_train.tolist()
 labels_train_l = labels_train.tolist()
 
-# create the artificial network with:
+# create the artificial neuron network with:
 # 1 input layer of size 64 (the images are 8x8 gray pixels)
 # 1 hidden layer of size 100
 # 1 output layer of size 10 (the labels of digits are 0 to 9)
@@ -49,7 +79,7 @@ startTime = time.time()
 nn.train(10, X_train_l, labels_train_l)
 
 elapsedTime = time.time() - startTime
-print("Training took {} seconds", int(elapsedTime))
+print("Training took {0} seconds".format(elapsedTime))
 
 # compute the predictions
 predictions = []
@@ -67,5 +97,10 @@ print(confusion_matrix(y_test, predictions))
 # show a classification report
 print("classification report")
 print(classification_report(y_test, predictions))
+
+# visualize
+show_training(digits)
+show_predictions(digits, X_test, (8, 8,), predictions)
+plt.show()
 
 # 94%-97% precision 94-97% recall
