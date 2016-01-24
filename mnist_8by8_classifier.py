@@ -71,7 +71,7 @@ labels_train_l = labels_train.tolist()
 
 
 # load or create an ANN
-nn = ANN([64, 100, 10])
+nn = ANN([1,1])
 serialized_name = 'nn_mnist_8by8_10epochs.pickle'
 
 if os.path.exists(serialized_name):
