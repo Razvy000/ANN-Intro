@@ -10,7 +10,7 @@ from ann import ANN
 # http://scikit-learn.org/stable/auto_examples/classification/plot_digits_classification.html
 import pylab as pl
 
-serialized_name = 'nn_mnist_8by8_10epochs.pickle'
+serialized_name = '60000.pickle'#'nn_mnist_8by8_10epochs.pickle'
 nn = ANN([1, 1]).deserialize(serialized_name)
 
 
@@ -22,10 +22,11 @@ drawing = False  # true if mouse is pressed
 mode = False  # if True, draw rectangle. Press 'm' to toggle to curve
 ix, iy = -1, -1
 
-radius = 30 # aprox 1/8  1/8 * 512 = 64
-img_size = (8, 8)
+radius = 32 # aprox 1/8  1/8 * 512 = 64
+img_size = (8, 8)#(28, 28)
 # mouse callback function
 
+color = (220)
 
 def draw_circle(event, x, y, flags, param):
 	global ix, iy, drawing, mode
@@ -39,14 +40,14 @@ def draw_circle(event, x, y, flags, param):
 			if mode == True:
 				cv2.rectangle(img, (ix, iy), (x, y), (0, 255, 0), -1)
 			else:
-				cv2.circle(img, (x, y), radius, (255), -1)
+				cv2.circle(img, (x, y), radius, color, -1)
 
 	elif event == cv2.EVENT_LBUTTONUP:
 		drawing = False
 		if mode == True:
 			cv2.rectangle(img, (ix, iy), (x, y), (0, 255, 0), -1)
 		else:
-			cv2.circle(img, (x, y), radius, (255), -1)
+			cv2.circle(img, (x, y), radius, color, -1)
 
 		font = cv2.FONT_HERSHEY_SIMPLEX
 
