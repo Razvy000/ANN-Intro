@@ -12,7 +12,14 @@ drawing utility
 softmax - used for examination
 
 28 by 28 classifier
-=============
 
 training error, validation error
+
+what happens if u scale the output then apply softmax?
+
+how much certainainty is there on the trained datased vs test dataset vs drawing?
+
+=============
+
+
 
