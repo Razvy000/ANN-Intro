@@ -78,11 +78,14 @@ def draw_circle(event, x, y, flags, param):
 		c /= c.max()
 		c = c * 0.99
 		print c
-		o = nn.predict(c)
-		predictNo = np.argmax(o)
+		out = nn.predict(c)
 
-		o = np.array(o)
-		print(100 * o).astype(int)
+		# compute a softmax
+
+		out = np.array(out)
+		softmax = np.exp(out) / np.sum(np.exp(out), axis= 0)
+		predictNo = np.argmax(softmax)
+		print(100 * softmax).astype(int)
 		print predictNo
 
 	#cv2.putText(img,''+ str(predictNo),(10,500), font, 1,(128,128,128),2)
