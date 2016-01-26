@@ -39,6 +39,33 @@ class ANN:
 
 				self.update_weights()
 
+	def train2(self, n_epochs, inputs, targets, everyXsteps, cb):
+		print("Training...")
+		n_examples = 0
+		for epoch in range(0, n_epochs):
+			# if epoch % 10 == 0:
+			#    print("Epoch:", epoch)
+			print("Epoch:", epoch)
+			for i in range(0, len(inputs)):
+				n_examples += 1
+				if n_examples % everyXsteps == 0:
+					cb(self, n_examples)
+
+				print(n_examples)
+
+				self.set_input(inputs[i])
+
+				self.propagate_input()
+
+				err = self.update_output_error(targets[i])
+
+				# if n_examples % 100 == 0:
+				#    print("Err:", err)
+
+				self.backprogate_error()
+
+				self.update_weights()
+
 	def predict(self, input):
 		self.set_input(input)
 		self.propagate_input()
@@ -88,6 +115,7 @@ class ANN:
 		return sum_error
 
 	# Backward error propagation
+	# Backpropagation = backward propagation of errors
 	def backprogate_error(self):
 		for l in range(len(self.layers) - 1, 0, -1):  # second param range is exclusive
 			upper = self.layers[l]  # upper is source
