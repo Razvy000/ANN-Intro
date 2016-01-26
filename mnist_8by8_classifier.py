@@ -57,18 +57,32 @@ X /= X.max()
 # split data into training and testing 75% of examples are used for training and 25% are used for testing
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25)
 
+# split again for validation
+X_train, X_valid, y_train, y_valid = train_test_split(X_train, y_train, test_size=0.1)
+
 # binarize the labels from a number into a vector with a 1 at that index
 # ex: label 4 -> binarized [0 0 0 0 1 0 0 0 0 0]
 # ex: label 7 -> binarized [0 0 0 0 0 0 0 1 0 0]
 labels_train = LabelBinarizer().fit_transform(y_train)
 labels_test = LabelBinarizer().fit_transform(y_test)
+labels_valid = LabelBinarizer().fit_transform(y_valid)
 
 # convert from numpy to normal python list for our simple implementation
 X_train_l = X_train.tolist()
+X_valid_l = X_valid.tolist()
+
 labels_train_l = labels_train.tolist()
+labels_valid_l = labels_valid.tolist()
 
 
+def evaluate(X_t, y_t, X_v, y_v):
+	def step_cb(nn, step):
+		training_error = nn.get_avg_error(X_t, y_t)
+		testing_error = nn.get_avg_error(X_v, y_v)
+		print("Terr {0}   Verr {1}".format(training_error, testing_error))
+		nn.serialize(nn, str(step) + ".pickle")
 
+	return step_cb
 
 # load or create an ANN
 nn = ANN([1,1])
@@ -88,7 +102,7 @@ else:
 	startTime = time.time()
 
 	# train it
-	nn.train(10, X_train_l, labels_train_l)
+	nn.train2(50, X_train_l, labels_train_l, 1000, evaluate(X_train_l, labels_train_l, X_valid_l, labels_valid_l))
 
 	elapsedTime = time.time() - startTime
 	print("Training took {0} seconds".format(elapsedTime))
@@ -119,3 +133,25 @@ show_prediction_digits(digits, X_test, (8, 8,), predictions)
 plt.show()
 
 # 94%-97% precision 94-97% recall
+
+
+
+
+print("trained on")
+for i in range(10):
+	out = nn.predict(X_train[i])
+	out = np.array(out)
+	softmax = np.exp(out) / np.sum(np.exp(out), axis= 0)
+	predictNo = np.argmax(softmax)
+	print(y_train[i], (100 * softmax).astype(int))
+
+
+print("tested on")
+for i in range(10):
+	out = nn.predict(X_test[i])
+	out = np.array(out)
+	# what happens when u scale it?
+	# out = 100 * out
+	softmax = np.exp(out) / np.sum(np.exp(out), axis= 0)
+	predictNo = np.argmax(softmax)
+	print(y_test[i], (100 * softmax).astype(int))
