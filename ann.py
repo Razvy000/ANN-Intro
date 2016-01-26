@@ -48,10 +48,6 @@ class ANN:
 			print("Epoch:", epoch)
 			for i in range(0, len(inputs)):
 				n_examples += 1
-				if n_examples % everyXsteps == 0:
-					cb(self, n_examples)
-
-				print(n_examples)
 
 				self.set_input(inputs[i])
 
@@ -59,17 +55,26 @@ class ANN:
 
 				err = self.update_output_error(targets[i])
 
-				# if n_examples % 100 == 0:
-				#    print("Err:", err)
-
 				self.backprogate_error()
 
 				self.update_weights()
+
+				if n_examples % everyXsteps == 0:
+					cb(self, n_examples)
 
 	def predict(self, input):
 		self.set_input(input)
 		self.propagate_input()
 		return self.get_output()
+
+	def get_avg_error(self, inputs, targets):
+		total_err = 0
+		for i in range(0, len(inputs)):
+			self.set_input(inputs[i])
+			self.propagate_input()
+			total_err += self.update_output_error(targets[i])
+
+		return total_err / len(inputs)
 
 	# Put data inside the network's first layer
 	def set_input(self, input_vector):
