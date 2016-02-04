@@ -74,11 +74,21 @@ X_valid_l = X_valid.tolist()
 labels_train_l = labels_train.tolist()
 labels_valid_l = labels_valid.tolist()
 
+steps = [] #[1, 2, 3, 4]
+train_error = [] #[50, 40, 20, 20]
+validation_err = [] #[70, 65, 63, 60]
+
+
+
 
 def evaluate(X_t, y_t, X_v, y_v):
 	def step_cb(nn, step):
 		training_error = nn.get_avg_error(X_t, y_t)
 		testing_error = nn.get_avg_error(X_v, y_v)
+
+		steps.append(step)
+		train_error.append(training_error)
+		validation_err.append(testing_error)
 		print("Terr {0}   Verr {1}".format(training_error, testing_error))
 		nn.serialize(nn, str(step) + ".pickle")
 
@@ -86,7 +96,7 @@ def evaluate(X_t, y_t, X_v, y_v):
 
 # load or create an ANN
 nn = ANN([1,1])
-serialized_name = 'nn_mnist_8by8_10epochs.pickle'
+serialized_name = 'models/nn_mnist_8by8_5epochs.pickle'
 
 if os.path.exists(serialized_name):
 	# load a saved ANN
@@ -102,13 +112,22 @@ else:
 	startTime = time.time()
 
 	# train it
-	nn.train2(50, X_train_l, labels_train_l, 1000, evaluate(X_train_l, labels_train_l, X_valid_l, labels_valid_l))
+	nn.train2(5, X_train_l, labels_train_l, 1000, evaluate(X_train_l, labels_train_l, X_valid_l, labels_valid_l))
 
 	elapsedTime = time.time() - startTime
 	print("Training took {0} seconds".format(elapsedTime))
 
 	# serialize and save the ANN
 	nn.serialize(nn, serialized_name)
+
+	# plot error over time
+	#plt.plot(step, train_error, 'b--', step, validation_err, 'gs', t, t**3, 'g^')
+	#plt.plot(step, train_error, 'b--', step, validation_err, 'g')
+	plt.plot(steps, train_error, 'b--', label="Training Error")
+	plt.plot(steps, validation_err, 'g', label="Validation Error")
+	plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3, ncol=2, mode="expand", borderaxespad=0.)
+	plt.title('Training Error vs Validation Error')
+	plt.show()
 
 # compute the predictions
 predictions = []
