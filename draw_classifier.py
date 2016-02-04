@@ -115,8 +115,10 @@ def draw_circle(event, x, y, flags, param):
 		out = np.array(out)
 		softmax = np.exp(out) / np.sum(np.exp(out), axis= 0)
 		predictNo = np.argmax(softmax)
-		print(100 * softmax).astype(int)
-		print predictNo
+		print "lbls   0  1  2  3  4  5  6  7  8  9"
+		print "prob", (100 * softmax).astype(int)
+		print "i predict", predictNo
+		print ""
 
 	#cv2.putText(img,''+ str(predictNo),(10,500), font, 1,(128,128,128),2)
 
