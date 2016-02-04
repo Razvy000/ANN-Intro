@@ -21,5 +21,8 @@ how much certainainty is there on the trained datased vs test dataset vs drawing
 
 =============
 
+is my drawing the same as the examples?
+	combine drawing and examples
+	
 
-
+add test for the 28x28

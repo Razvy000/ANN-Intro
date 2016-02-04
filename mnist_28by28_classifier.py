@@ -13,7 +13,8 @@ from ann import ANN
 # load lecun mnist dataset
 X = []
 y = []
-with open('data/mnist_train_data.txt', 'r') as fd, open('data/mnist_train_label.txt', 'r') as fl:
+#with open('data/mnist_train_data.txt', 'r') as fd, open('data/mnist_train_label.txt', 'r') as fl:
+with open('data/mnist_test_data.txt', 'r') as fd, open('data/mnist_test_label.txt', 'r') as fl:
 	for line in fd:
 		img = line.split()
 		pixels = [int(pixel) for pixel in img]
@@ -24,11 +25,11 @@ with open('data/mnist_train_data.txt', 'r') as fd, open('data/mnist_train_label.
 X = np.array(X, np.float)
 y = np.array(y, np.float)
 
-X_val = X[55000:]
-y_val = y[55000:]
+#X_val = X[55000:]
+#y_val = y[55000:]
 
-X = X[:55000]
-y = y[:55000]
+#X = X[:55000]
+#y = y[:55000]
 
 # shuffle
 def shuffle_in_unison_inplace(a, b):
@@ -52,7 +53,7 @@ X /= X.max()
 
 # split data into training and testing 75% of examples are used for training and 25% are used for testing
 X_train, y_train = X, y
-#X_test, y_test = X, y ##############################3
+X_test, y_test = X, y ##############################3
 #########################################################
 
 # binarize the labels from a number into a vector with a 1 at that index
@@ -76,7 +77,7 @@ def step_cb(nn, step):
 
 # load or create an ANN
 nn = ANN([1,1])
-serialized_name = 'nn_mnist_28by28_1epochs.pickle'
+serialized_name = '28_1000000.pickle'
 
 if os.path.exists(serialized_name):
 	# load a saved ANN
@@ -101,7 +102,7 @@ else:
 	nn.serialize(nn, serialized_name)
 
 # compute the predictions
-'''
+
 predictions = []
 for i in range(X_test.shape[0]):
 	o = nn.predict(X_test[i])
@@ -117,4 +118,3 @@ print(confusion_matrix(y_test, predictions))
 # show a classification report
 print("classification report")
 print(classification_report(y_test, predictions))
-'''

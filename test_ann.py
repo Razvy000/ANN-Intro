@@ -1,9 +1,17 @@
+from __future__ import print_function
+
 import unittest
 from ann import ANN
 
 
 class TestANN(unittest.TestCase):
 
+	def disabled( f):
+		def _decorator():
+			print(f.__name__ + ' has been disabled')
+		return _decorator
+	
+	@disabled
 	def test_xor_trainig(self):
 		print("test_xor_trainig...")
 		nn = ANN([2, 2, 1])
@@ -23,6 +31,60 @@ class TestANN(unittest.TestCase):
 		self.assertTrue(predicts[3] < predicts[1], 'xor relation3 not learned')
 		self.assertTrue(predicts[3] < predicts[2], 'xor relation4 not learned')
 
+	def test_mnist_28by28(self):
+		import time
+		import os
+		import numpy as np
+		import matplotlib.pyplot as plt
+		from sklearn.cross_validation import train_test_split
+		from sklearn.datasets import load_digits
+		from sklearn.metrics import confusion_matrix, classification_report
+		from sklearn.preprocessing import LabelBinarizer
+		from ann import ANN
+
+		# load lecun mnist dataset
+		X = []
+		y = []
+		with open('data/mnist_test_data.txt', 'r') as fd, open('data/mnist_test_label.txt', 'r') as fl:
+			for line in fd:
+				img = line.split()
+				pixels = [int(pixel) for pixel in img]
+				X.append(pixels)
+			for line in fl:
+				pixel = int(line)
+				y.append(pixel)
+		X = np.array(X, np.float)
+		y = np.array(y, np.float)
+
+		# normalize input into [0, 1]
+		X -= X.min()
+		X /= X.max()
+
+		# quick test
+		#X = X[:1000]
+		#y = y[:1000]
+
+		# for my network
+		X_test = X
+		y_test = y #LabelBinarizer().fit_transform(y)
+
+		nn = ANN([1,1])
+		nn = nn.deserialize('28_200000.pickle') # '28_100000.pickle'
+
+		predictions = []
+		for i in range(X_test.shape[0]):
+			o = nn.predict(X_test[i])
+			predictions.append(np.argmax(o))
+
+		# compute a confusion matrix
+		print("confusion matrix")
+		print(confusion_matrix(y_test, predictions))
+
+		# show a classification report
+		print("classification report")
+		print(classification_report(y_test, predictions))
+
+	@disabled
 	def test_mnist_8by8_training(self):
 		print("test_mnist_8by8_training")
 		import time
