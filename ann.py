@@ -47,7 +47,6 @@ class ANN:
 			#    print("Epoch:", epoch)
 			print("Epoch:", epoch)
 			for i in range(0, len(inputs)):
-				n_examples += 1
 
 				self.set_input(inputs[i])
 
@@ -61,6 +60,8 @@ class ANN:
 
 				if n_examples % everyXsteps == 0:
 					cb(self, n_examples)
+
+				n_examples += 1
 
 	def predict(self, input):
 		self.set_input(input)

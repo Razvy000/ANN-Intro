@@ -112,7 +112,7 @@ else:
 	startTime = time.time()
 
 	# train it
-	nn.train2(5, X_train_l, labels_train_l, 1000, evaluate(X_train_l, labels_train_l, X_valid_l, labels_valid_l))
+	nn.train2(5, X_train_l, labels_train_l, 100, evaluate(X_train_l, labels_train_l, X_valid_l, labels_valid_l))
 
 	elapsedTime = time.time() - startTime
 	print("Training took {0} seconds".format(elapsedTime))
